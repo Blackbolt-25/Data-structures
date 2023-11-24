@@ -1,0 +1,66 @@
+1.Different types of trees:-
+a. Full/Strict BT 
+b. Complete BT
+c. Balanced BT
+d. Skewded BT
+e. Perfect BT
+f. Ordered BT
+h. Degenerate/pathalogical BT (Nothing but linked list)
+
+
+Notes:-
+
+1. For perfect binary tress:-
+    . No.of nodes = 2^h -1
+    . No.of min height required if N nodes are there = log2(N+1)
+    . No.of nodes at l level is :-  L=2^(l-1)
+    . No.of min level there if L leaf nodes are there :- l=log2(L)+1
+2. For Full/Strict BT:-
+    . No.of leaf nodes = No.of nodes with 2 children +1
+
+
+3. Advantages of Tree data structure:-
+    . Faster insertion and deletion of elements.
+    . Size of the tree increases dynamically, hence good for memory.
+    . Traversal of elements is faster in tree.
+    
+4. Disadvantages of Tree data structure:-
+    . Complex data structure- Due to recursion, the tree becomes very complex.
+    . Poor Memory management- Since the Tree data sturcture is so vast, it consumes a lot of memory.
+    . Unbalanced tree- If a tree is unbalanced, then it sometimes results in slower run-time speeds.
+	
+5. Application of Tree data structure:-
+    . It is used in XML parsing.
+    . It is used in Database indexing.
+    . It is used in Arithmatic eval.
+    . It is used in AIML.   
+
+Threaded Binary Search Trees:-
+The drawback of binary tree is traversing from one node to the another.There are so many null pointers in binary tree. To make utilize of those Null pointers we can use a 
+tree wherein all nodes are pointing to its predecessor or successor , there in so null pointers in TBST.
+
+How to construct TBST:-
+i) Set leftmost and rightmost pointers as NULL and these pointers points to dummy node.
+ii) Obtain inorder traversal of BST. Left pointer points to inorder predecssor and right pointer points to inorder successor.
+iii) For a dummy node, the left points to the root node and the right points to itself. We give the dummy node to avoid the usage of NULL pointer.
+iv) Advantages:-
+	.)Enables linear traversal of elements.
+	.)Gives forward and backward traversal of elements of by in-order fashion.
+	.)The inorder traversal is faster.
+	.)There is no need for a stack and recursion for inorder traversal hence less memory usage.
+	.)More efficient usage of memory bcoz there no use of NULL Pointers.
+	.)Traversing backward is possible in TBST.
+vi)Disadvantages:-
+	.)More complex to insert and delete new nodes.
+	.)Extra information is needed to implement if a node is a
+v)Application:-
+	.)Arthimatic eval.
+	.)Database indexing.
+	.)Symbol table management.
+
+
+
+WACP to implement a BTT.
+Operation:-
+i)
+
