@@ -65,7 +65,7 @@ NODE* right_rotate(NODE* y)
 }
 
 
-node* splay(node* root, int key)
+NODE* splay(node* root, int key)
 {
     if (root == NULL || root->key == key)
         return root;
@@ -221,7 +221,7 @@ int main()
     root=insert2(root,17);
     root=insert2(root,7);
     inorder(root);
-    int temp=search(15);
+    int temp=search(root,15);
     inorder(root);
 }
 
