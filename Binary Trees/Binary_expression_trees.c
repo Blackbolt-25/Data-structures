@@ -1,87 +1,163 @@
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
+#include<math.h>
+#define MAX_SIZE 100
+
 
 typedef struct node{
-    char value;
-    struct node* left;
-    struct node* right;
+  char data;
+  struct node* right;
+  struct node* left;
 }NODE;
 
-int operator(char value)
-{
-    return value=='^' || value=='*' || value=='/' || value=='+' || value=='-' || value=='%';
-}
+typedef struct stack{
+  NODE* stack[MAX_SIZE];
+  int top;
+}STACK;
 
 NODE* create(char data)
 {
-    NODE* newnode=(NODE*)malloc(sizeof(NODE));
-    newnode->value=data;
-    newnode->right=NULL;
-    newnode->left=NULL;
-    return newnode;
+  NODE* newnode= (NODE*)malloc(sizeof(NODE));
+  newnode->right=NULL;
+  newnode->left=NULL;
+  newnode->data=data;
+  return newnode;
 }
 
-void built(char *string,NODE** root)
-{
-    NODE* stack[100];
-    int top=-1;
-    for(int i=0;i<strlen(string);i++) 
-    {
-        char token=string[i];
-        if(!operator(token))
-        {
-            NODE* newnode=create(token);
-            stack[++top]=newnode;
-        }
-        else
-        {
-            NODE* right=stack[top--];
-            NODE* left=stack[top--];
-            NODE* parent=create(token);
-            parent->left=left;
-            parent->right=right;
-            stack[++top]=parent;
-        }
-    }
-    *root=stack[top--];
-}
-
-int eval_expression(NODE* root)
-{
-    if(root==NULL)
-        return 0;
-    else if(!operator((root)->value))
-        return root->value - '0';
-    int leftnode=eval_expression(root->left);
-    int rightnode=eval_expression(root->right);
-    switch(root->value)
-    {
-        case '*':
-            return leftnode*rightnode;
-        case '+':
-            return leftnode+rightnode;
-        case '-':
-            return leftnode-rightnode;
-        case '^':
-            return leftnode^rightnode;
-        case '%':
-            return leftnode%rightnode;
-        case '/' :
-            return leftnode/rightnode;
-    }
-    return 0;
-}
+void init_s(STACK** s);
+void build_postfix_expression(char* str, NODE** head);
+void build_prefix_expression(char* str, NODE** head);
+int is_operator(char data);
+int eval_expression(NODE* head);
 
 
 int main()
 {
-    char string[100];
-    printf("Enter the postfix expression to be evaluated\n");
-    scanf("%s",string);
-    NODE* root=NULL;
-    built(string,&root);
-    int result=eval_expression(root);
-    printf("The evaluated expression is:- %d",result);
+  int choice;  
+  NODE* head= NULL;
+  char str[MAX_SIZE];
+  printf("1.Prefix expression\n2.Postfix expression\nEnter your choice:-");
+  scanf(" %d",&choice);
+  switch(choice)
+  {
+    case 1:
+    {
+      printf("Enter your Prefix expression:- ");
+      scanf(" %s",str);
+      build_prefix_expression(str , &head);
+      if(head == NULL)
+        printf("The entered expression is not correct.\n Please check again\n");
+      else
+        printf("The evaluated expression is:- %d",eval_expression(head));
+      break;
+    }
+    case 2:
+    {
+      printf("Enter your Postfix expression:- ");
+      scanf(" %s",str);
+      build_postfix_expression(str , &head);
+      if(head == NULL)
+        printf("The entered expression is not correct.\n Please check again\n");
+      else
+        printf("The evaluated expression is:- %d",eval_expression(head));
+      break;
+    }
+    default:
+      printf("Wrong option pls try again\n");
+      break;
+  }
+}
+
+
+void init_s(STACK** s)
+{
+  (*s)->top = -1;
+}
+
+int is_operator(char data)
+{
+  return data == '+' || data == '-' || data == '/' || data =='%' || data == '^' || data == '*';
+}
+
+void build_postfix_expression(char* str, NODE** head)
+{
+  STACK* s;
+  init_s(&s);
+  for(int i=0;i<strlen(str);i++)
+  {
+    if(!is_operator(str[i]))
+    {
+      NODE* newnode = create(str[i]);
+      s->stack[++s->top] = newnode;
+    }
+    else
+    {
+      NODE* current = create(str[i]);
+      NODE* right = s->stack[s->top--];
+      NODE* left = s->stack[s->top--];
+      current->left=left;
+      current->right=right;
+      s->stack[++s->top] = current;
+    }
+  }
+  if(s->top == 0)
+    *head = s->stack[s->top--];
+  else
+    *head = NULL;
+}
+
+void build_prefix_expression(char* str, NODE** head)
+{
+  STACK* s;
+  init_s(&s);
+  for(int i=strlen(str) - 1;i>=0;i--)
+  {
+    if(!is_operator(str[i]))
+    {
+      NODE* newnode = create(str[i]);
+      s->stack[++s->top] = newnode;
+    }
+    else
+    {
+      NODE* current = create(str[i]);
+      NODE* left = s->stack[s->top--];
+      NODE* right = s->stack[s->top--];
+      current->left=left;
+      current->right=right;
+      s->stack[++s->top] = current;
+    }
+  }
+  if(s->top == 0)
+    *head = s->stack[s->top];
+  else
+    *head = NULL;
+}
+
+
+int eval_expression(NODE* head)
+{
+  if(head == NULL)
+    return 0;
+  else if(!is_operator(head->data))
+      return head->data - '0';
+  char temp = head->data;
+  switch(temp)
+  {
+    case '+':
+      return eval_expression(head->left) + eval_expression(head->right);
+    case '-':
+      return eval_expression(head->left) - eval_expression(head->right);
+    case '/':
+      return eval_expression(head->left) / eval_expression(head->right);
+    case '%':
+      return eval_expression(head->left) % eval_expression(head->right);
+    case '^':
+      return pow(eval_expression(head->left),eval_expression(head->right));
+    case '*':
+      return eval_expression(head->left) * eval_expression(head->right);
+  }
+  return 0;
 }
 
 
